@@ -11,7 +11,12 @@ WORKDIR /var/www/html
 RUN drush si --db-url=sqlite://sites/all/files/ht.sqlite -y
 RUN drush en simpletest -y
 
-# Setup
+# Setup volume for module.
 RUN mkdir /module && ln -s /module /var/www/html/modules/local
 VOLUME ["/module"]
-ENTRYPOINT ["/module/tests/docker/entrypoint"]
+
+# Add and install the DockerCI runner.
+ADD . /dcir
+RUN cd /dcir \
+    && composer install
+ENTRYPOINT ["/dcir/dcir.sh"]
