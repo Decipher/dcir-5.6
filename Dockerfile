@@ -15,8 +15,6 @@ RUN drush en simpletest -y
 RUN mkdir /module && ln -s /module /var/www/html/modules/local
 VOLUME ["/module"]
 
-# Add and install the DockerCI runner.
+# Add the Drupal common CI Runner (DCIR).
 ADD . /dcir
-RUN cd /dcir \
-    && composer install
 ENTRYPOINT ["/dcir/dcir.sh"]
