@@ -1,8 +1,10 @@
 FROM drupalci/web-5.6
 
-# Update computer and install Drush.
+# Update composer.
 RUN composer self-update
-RUN composer global require drush/drush:8.1.2
+
+# Install composer global packages.
+RUN composer global require drush/drush:8.1.2 decipher/dcir:0.*
 ENV PATH "$HOME/.composer/vendor/bin:$PATH"
 
 # Download and install Drupal.
@@ -15,6 +17,5 @@ RUN drush en simpletest -y
 RUN mkdir /module && ln -s /module /var/www/html/modules/local
 VOLUME ["/module"]
 
-# Add the Drupal common CI Runner (DCIR).
-ADD . /dcir
-ENTRYPOINT ["/dcir/dcir.sh"]
+# Set DCIR as the entrypoint.
+ENTRYPOINT ["dcir"]
