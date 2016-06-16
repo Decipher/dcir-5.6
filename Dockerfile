@@ -4,17 +4,22 @@ FROM drupalci/web-5.6
 RUN composer self-update
 
 # Install composer global packages.
-RUN composer global require drush/drush:8.1.2 decipher/dcir:0.*
+RUN composer global require drush/drush:8.1.2 decipher/dcir:dev-develop#5bc87c2448f6e49c605e32b12aac9582478e41a9
 ENV PATH "$HOME/.composer/vendor/bin:$PATH"
 
-# Download and install Drupal.
-RUN drush dl drupal-8 --destination=/var/www --drupal-project-rename=html -y
 WORKDIR /var/www/html
-RUN drush si --db-url=sqlite://sites/all/files/ht.sqlite -y
-RUN drush en simpletest -y
 
-# Setup volume for module.
-RUN mkdir /module && ln -s /module /var/www/html/modules/local
+# Download and install Drupal 7.
+RUN drush dl drupal-7 --destination=/var/www/html --drupal-project-rename=drupal-7 -y
+RUN cd drupal-7 && drush si --db-url=sqlite://sites/default/files/.ht.sqlite -y
+RUN cd drupal-7 && drush en simpletest -y
+
+# Download and install Drupal 8.
+RUN drush dl drupal-8 --destination=/var/www/html --drupal-project-rename=drupal-8 -y
+RUN cd drupal-8 && drush si --db-url=sqlite://sites/default/files/.ht.sqlite -y
+RUN cd drupal-8 && drush en simpletest -y
+
+# Setup volume for project.
 VOLUME ["/module"]
 
 # Set DCIR as the entrypoint.
