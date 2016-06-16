@@ -20,7 +20,7 @@ RUN cd drupal-8 && drush si --db-url=sqlite://sites/default/files/.ht.sqlite -y
 RUN cd drupal-8 && drush en simpletest -y
 
 # Setup volume for project.
-VOLUME ["/module"]
+VOLUME ["/dcir"]
 
 # Set DCIR as the entrypoint.
 ENTRYPOINT ["dcir"]
