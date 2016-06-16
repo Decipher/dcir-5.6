@@ -4,7 +4,7 @@ FROM drupalci/web-5.6
 RUN composer self-update
 
 # Install composer global packages.
-RUN composer global require drush/drush:8.1.2 decipher/dcir:dev-develop#5bc87c2448f6e49c605e32b12aac9582478e41a9
+RUN composer global require drush/drush:8.1.2 decipher/dcir:dev-develop#8310695
 ENV PATH "$HOME/.composer/vendor/bin:$PATH"
 
 WORKDIR /var/www/html
