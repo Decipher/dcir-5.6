@@ -4,20 +4,30 @@ FROM drupalci/web-5.6
 RUN composer self-update
 
 # Install composer global packages.
-RUN composer global require drush/drush:8.1.2 decipher/dcir:0.2.0
+RUN composer global require decipher/dcir:0.3.0
 ENV PATH "$HOME/.composer/vendor/bin:$PATH"
+
+# Configure Code Sniffer for Drupal standards.
+RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
 
 WORKDIR /var/www/html
 
 # Download and install Drupal 7.
-RUN drush dl drupal-7 --destination=/var/www/html --drupal-project-rename=drupal-7 -y
-RUN cd drupal-7 && drush si --db-url=sqlite://sites/default/files/.ht.sqlite -y
-RUN cd drupal-7 && drush en simpletest -y
+RUN drush dl drupal-7 --destination=/var/www/html --drupal-project-rename=drupal-7 -y && \
+    cd drupal-7 && \
+    drush si --db-url=sqlite://sites/default/files/.ht.sqlite -y && \
+    drush en simpletest -y
+
+# Patch Drupal 7 for simpletest/sqlite issue.
+RUN cd drupal-7 && \
+    wget https://www.drupal.org/files/issues/1713332-76.patch && \
+    patch -p1 < 1713332-76.patch
 
 # Download and install Drupal 8.
-RUN drush dl drupal-8 --destination=/var/www/html --drupal-project-rename=drupal-8 -y
-RUN cd drupal-8 && drush si --db-url=sqlite://sites/default/files/.ht.sqlite -y
-RUN cd drupal-8 && drush en simpletest -y
+RUN drush dl drupal-8 --destination=/var/www/html --drupal-project-rename=drupal-8 -y && \
+    cd drupal-8 && \
+    drush si --db-url=sqlite://sites/default/files/.ht.sqlite -y && \
+    drush en simpletest -y
 
 # Setup volume for project.
 VOLUME ["/dcir"]
