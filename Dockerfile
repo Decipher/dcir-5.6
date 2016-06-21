@@ -4,8 +4,11 @@ FROM drupalci/web-5.6
 RUN composer self-update
 
 # Install composer global packages.
-RUN composer global require drush/drush:8.1.2 decipher/dcir:0.2.0
+RUN composer global require decipher/dcir:0.3.0
 ENV PATH "$HOME/.composer/vendor/bin:$PATH"
+
+# Configure Code Sniffer for Drupal standards.
+RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
 
 WORKDIR /var/www/html
 
