@@ -4,7 +4,7 @@ FROM drupalci/web-5.6
 RUN composer self-update
 
 # Install composer global packages.
-RUN composer global require decipher/dcir:0.4.0
+RUN composer global require decipher/dcir:0.4.1
 ENV PATH "$HOME/.composer/vendor/bin:$PATH"
 
 # Configure Code Sniffer for Drupal standards.
